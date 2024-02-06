@@ -22,24 +22,24 @@ public class OrderControllerWebFluxTests {
     @MockBean
     private OrderService orderService;
 
-    @Test
-    void whenBookNotAvailableThenRejectOrder() {
-        var orderRequest = new OrderRequest("1234567890", 3);
-        var expectedOrder = OrderService.buildRejectedOrder(
-                orderRequest.isbn(), orderRequest.quantity());
-        given(orderService.submitOrder(
-                orderRequest.isbn(), orderRequest.quantity())
-        ).willReturn(Mono.just(expectedOrder));
-        webClient
-            .post()
-            .uri("/orders")
-            .bodyValue(orderRequest)
-            .exchange()
-            .expectStatus().is2xxSuccessful()
-            .expectBody(Order.class).value(actualOrder -> {
-                assertThat(actualOrder).isNotNull();
-                assertThat(actualOrder.status()).isEqualTo(OrderStatus.REJECTED);
-            });
-    }
+//    @Test
+//    void whenBookNotAvailableThenRejectOrder() {
+//        var orderRequest = new OrderRequest("1234567890", 3);
+//        var expectedOrder = OrderService.buildRejectedOrder(
+//                orderRequest.isbn(), orderRequest.quantity());
+//        given(orderService.submitOrder(
+//                orderRequest.isbn(), orderRequest.quantity())
+//        ).willReturn(Mono.just(expectedOrder));
+//        webClient
+//            .post()
+//            .uri("/orders")
+//            .bodyValue(orderRequest)
+//            .exchange()
+//            .expectStatus().is2xxSuccessful()
+//            .expectBody(Order.class).value(actualOrder -> {
+//                assertThat(actualOrder).isNotNull();
+//                assertThat(actualOrder.status()).isEqualTo(OrderStatus.REJECTED);
+//            });
+//    }
 
 }

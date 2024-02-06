@@ -31,6 +31,10 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public Flux<Order> getAllOrders(String userId) {
+        return orderRepository.findAllByCreatedBy(userId);
+    }
+
     @Transactional
     public Mono<Order> submitOrder(String isbn, int quantity) {
         return bookClient.getBookByIsbn(isbn)
@@ -76,6 +80,8 @@ public class OrderService {
                 OrderStatus.DISPATCHED,
                 existingOrder.createdDate(),
                 existingOrder.lastModifiedDate(),
+                existingOrder.createdBy(),
+                existingOrder.lastModifiedBy(),
                 existingOrder.version()
         );
     }
