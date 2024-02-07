@@ -37,6 +37,7 @@ public class OrderService {
 
     @Transactional
     public Mono<Order> submitOrder(String isbn, int quantity) {
+        log.info("Submit order: {}, {}", isbn, quantity);
         return bookClient.getBookByIsbn(isbn)
             .map(book -> buildAcceptedOrder(book, quantity))
             .defaultIfEmpty(buildRejectedOrder(isbn, quantity))
@@ -45,11 +46,13 @@ public class OrderService {
     }
 
     public static Order buildAcceptedOrder(Book book, int quantity) {
+        log.info("Accepted order: {}, {}", book.title(), quantity);
         return Order.of(book.isbn(), book.title() + " - " + book.author(),
                 book.price(), quantity, OrderStatus.ACCEPTED);
     }
 
     public static Order buildRejectedOrder(String bookIsbn, int quantity) {
+        log.info("Rejected order: {}, {}", bookIsbn, quantity);
         return Order.of(bookIsbn, null, null, quantity, OrderStatus.REJECTED);
     }
 
@@ -64,6 +67,7 @@ public class OrderService {
     }
 
     public Flux<Order> consumeOrderDispatchedEvent(Flux<OrderDispatchedMessage> flux) {
+        log.info("Consuming order dispatch event");
         return flux
             .flatMap(message -> orderRepository.findById(message.orderId()))
             .map(this::buildDispatchedOrder)
