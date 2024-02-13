@@ -15,14 +15,16 @@ public class SecurityConfig {
     @Bean
     SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
 
-        http.oauth2ResourceServer( c ->
-                c.jwt(Customizer.withDefaults())
-        );
+//        http.oauth2ResourceServer( c ->
+//                c.jwt(Customizer.withDefaults())
+//        );
 
         return http
             .authorizeExchange(exchange -> exchange
-                    .anyExchange().authenticated()
+                .pathMatchers("/actuator/**").permitAll()
+                .anyExchange().authenticated()
             )
+            .oauth2ResourceServer( c -> c.jwt(Customizer.withDefaults()))
             .requestCache(requestCacheSpec ->
                     requestCacheSpec.requestCache(NoOpServerRequestCache.getInstance()))
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
